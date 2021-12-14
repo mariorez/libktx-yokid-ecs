@@ -1,0 +1,42 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        google()
+        gradlePluginPortal()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:$androidPluginVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
+}
+
+allprojects {
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+}
+
+configure(subprojects - project(':android')) {
+    apply plugin: 'java-library'
+    apply plugin: 'kotlin'
+    sourceCompatibility = 1.8
+    compileJava {
+        options.incremental = true
+    }
+}
+
+subprojects {
+    version = '0.0.1'
+    ext.appName = 'Yokid'
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        gradlePluginPortal()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://s01.oss.sonatype.org' }
+    }
+}
+
+eclipse.project.name = 'Yokid' + '-parent'
