@@ -3,10 +3,11 @@ package com.mariorez
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.mariorez.component.TextureComponent
+import com.mariorez.component.RenderComponent
 import com.mariorez.component.TransformComponent
 import com.mariorez.system.RenderingSystem
 import ktx.app.KtxScreen
+import ktx.ashley.add
 import ktx.ashley.entity
 import ktx.ashley.with
 import ktx.assets.disposeSafely
@@ -24,13 +25,15 @@ class GameScreen : KtxScreen {
     }
 
     init {
-        engine.entity {
-            with<TextureComponent> {
-                texture = kotlinLogo
-            }
-            with<TransformComponent> {
-                position.x = 50f
-                position.y = 50f
+        engine.add {
+            entity {
+                with<RenderComponent> {
+                    sprite.setRegion(kotlinLogo)
+                }
+                with<TransformComponent> {
+                    position.x = 50f
+                    position.y = 50f
+                }
             }
         }
 

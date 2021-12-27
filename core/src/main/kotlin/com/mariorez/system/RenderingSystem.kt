@@ -1,28 +1,38 @@
 package com.mariorez.system
 
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.systems.IteratingSystem
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.mariorez.component.TextureComponent
+import com.badlogic.ashley.systems.SortedIteratingSystem
+import com.badlogic.gdx.graphics.g2d.Batch
+import com.mariorez.component.RenderComponent
 import com.mariorez.component.TransformComponent
 import ktx.ashley.allOf
-import ktx.ashley.mapperFor
+import ktx.ashley.get
 
 class RenderingSystem(
-    private val batch: SpriteBatch
-) : IteratingSystem(
-    allOf(TextureComponent::class, TransformComponent::class).get()
+    private val batch: Batch
+) : SortedIteratingSystem(
+    allOf(RenderComponent::class, TransformComponent::class).get(),
+    compareBy { it[TransformComponent.mapper] }
 ) {
 
-    private val textureMapper = mapperFor<TextureComponent>()
-    private val transformMapper = mapperFor<TransformComponent>()
+    override fun update(deltaTime: Float) {
+        batch.begin()
+        super.update(deltaTime)
+        batch.end()
+    }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        val texture = textureMapper.get(entity).texture
-        val position = transformMapper.get(entity).position
+        val render = RenderComponent.mapper.get(entity)
+        val position = TransformComponent.mapper.get(entity).position
 
-        batch.begin()
-        batch.draw(texture!!, position.x, position.y)
-        batch.end()
+        render.sprite.run {
+            setBounds(
+                position.x,
+                position.y,
+                texture.width.toFloat(),
+                texture.height.toFloat()
+            )
+            draw(batch)
+        }
     }
 }
