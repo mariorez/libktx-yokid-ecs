@@ -22,10 +22,10 @@ class RenderingSystem(
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        val render = RenderComponent.mapper.get(entity)
+        val sprite = RenderComponent.mapper.get(entity).sprite
         val position = TransformComponent.mapper.get(entity).position
 
-        render.sprite.run {
+        sprite.run {
             setBounds(
                 position.x,
                 position.y,
