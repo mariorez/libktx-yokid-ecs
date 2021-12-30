@@ -9,6 +9,7 @@ import com.mariorez.component.TransformComponent
 import com.mariorez.system.AnimationSystem
 import com.mariorez.system.RenderingSystem
 import ktx.app.KtxScreen
+import ktx.ashley.add
 import ktx.ashley.entity
 import ktx.ashley.with
 import ktx.assets.disposeSafely
@@ -26,27 +27,30 @@ class GameScreen : KtxScreen {
     }
 
     init {
-        val logo = engine.entity {
-            with<RenderComponent> {
-                sprite.setRegion(kotlinLogo)
+        engine.add {
+            entity { // KTX
+                with<RenderComponent> {
+                    sprite.setRegion(kotlinLogo)
+                }
+                with<TransformComponent> {
+                    position.x = 170f
+                    position.y = 300f
+                }
             }
-            with<TransformComponent> {
-                position.x = 170f
-                position.y = 300f
+            entity { // Yokid
+                with<AnimationComponent>()
+                with<RenderComponent>()
+                with<TransformComponent> {
+                    position.x = 25f
+                    position.y = 25f
+                }
             }
         }
 
-        val yokid = engine.entity {
-            with<AnimationComponent>()
-            with<RenderComponent>()
-            with<TransformComponent> {
-                position.x = 25f
-                position.y = 25f
-            }
+        engine.apply {
+            addSystem(AnimationSystem())
+            addSystem(RenderingSystem(batch))
         }
-
-        engine.addSystem(AnimationSystem())
-        engine.addSystem(RenderingSystem(batch))
     }
 
     override fun render(delta: Float) {
